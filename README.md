@@ -1,4 +1,4 @@
-# frontend-challenge
+# todo-app
 
 ## Tech to use
 - nx
