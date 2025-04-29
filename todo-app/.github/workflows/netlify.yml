@@ -1,0 +1,35 @@
+name: Netlify Deploy (Nx)
+
+on:
+  push:
+    branches:
+      - main  # or change to your deploy branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # or your Node version
+
+      - name: Install dependencies
+        run: pushd apps/todo-app && npm install
+
+      - name: Nx build
+        run: npx nx build todo-app --prod
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN  }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID  }}
+        run: |
+          netlify deploy --prod --dir=dist/apps/todo-app
